@@ -92,7 +92,8 @@ public class WireMoveManager : MonoBehaviour
             wireStayPosition.y = selectingWireRigidBody.position.y;
         }else if (moveAction.ReadValue<Vector2>().y < -0.01f)
         {
-            selectingCableObject.addLine();
+            selectingCableObject.SlowlyAddLine();
+            wireStayPosition.y = selectingWireRigidBody.position.y;
         }
         onWireAddForce.OnNext(moveAction.ReadValue<Vector2>() *  MoveSpeedMax * Time.deltaTime);
     }

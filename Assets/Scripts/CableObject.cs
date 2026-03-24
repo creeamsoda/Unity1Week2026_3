@@ -21,6 +21,8 @@ public class CableObject : MonoBehaviour
     [SerializeField] int CableLength = 100;
 
     [SerializeField] private float ReelPower = 100f;
+
+    [SerializeField] private float AddLinePower = 100f;
     //糸の最大長さ（無限に糸を伸ばせないようにする）
     const int MAXLENGTH = 1000;
 
@@ -54,6 +56,19 @@ public class CableObject : MonoBehaviour
         }
     }
 
+    public void SlowlyAddLine()
+    {
+        if (StartObj.transform.position.y < StartPosY + CablePartSize - 0.01f)
+        {
+            addLine();
+            
+        }
+        else
+        {
+            startObjRigidBody.AddForce(new Vector2(0f, -AddLinePower * Time.deltaTime));
+        }
+    }
+
     //糸を1単位出す
     public void addLine()
     {
@@ -80,6 +95,7 @@ public class CableObject : MonoBehaviour
         newCablePart.transform.position
             = new Vector2(startPos.x,
             startPos.y);
+        StartObj.transform.position = new Vector2(startPos.x, startPos.y + CablePartSize);
         if (transform.childCount > 1)
         {
             newCablePart.gameObject.GetComponent<HingeJoint2D>().connectedBody
@@ -112,6 +128,8 @@ public class CableObject : MonoBehaviour
         Destroy(vertices[vertices.Count - 1]);
         vertices.RemoveAt(vertices.Count - 1);
         GameObject obj = vertices[vertices.Count - 1];
+        
+        StartObj.transform.position = new Vector2(obj.transform.position.x, obj.transform.position.y - CablePartSize*0.3f);
 
         //先端オブジェクトにくっつけなおす
         StartObj.GetComponent<HingeJoint2D>().connectedBody
