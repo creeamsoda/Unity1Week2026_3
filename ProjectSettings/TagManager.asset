@@ -41,6 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Rope
+    uniqueID: 1450779743
+    locked: 0
   - name: Debug
     uniqueID: 285527029
     locked: 0

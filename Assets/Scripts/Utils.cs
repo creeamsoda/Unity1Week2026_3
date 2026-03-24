@@ -1,4 +1,5 @@
 
+using System.Linq;
 using System.Numerics;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
@@ -29,5 +30,9 @@ namespace DefaultNamespace
             return new Vector2((float) result.Real, (float) result.Imaginary);
         }
 
+        public static T[] GetComponentsInChildrenWithoutSelf<T>(this GameObject self) where T : Component
+        {
+            return self.GetComponentsInChildren<T>().Where(c => self != c.gameObject).ToArray();
+        }
     }
 }
