@@ -5,7 +5,7 @@ Shader "Hidden/RectDrawer"
         _Center("Center (UV)", Vector) = (0.5, 0.5, 0, 0)
         _Size("Size (UV)", Vector) = (0.2, 0.2, 0, 0)
         _Rotation("Rotation (Rad)", Float) = 0
-        _Aspect("Aspect Ratio (W/H)", Float) = 1.0 // 追加
+        _Aspect("Aspect Ratio (W/H)", Float) = 1.0
     }
     SubShader
     {
@@ -25,7 +25,7 @@ Shader "Hidden/RectDrawer"
             float2 _Center;
             float2 _Size;
             float _Rotation;
-            float _Aspect; // 追加
+            float _Aspect; 
 
             Varyings vert(Attributes IN)
             {
@@ -44,7 +44,7 @@ Shader "Hidden/RectDrawer"
                 float2 st = uv - _Center;
                 st.x *= _Aspect; 
 
-                // 2. 補正した空間で回転（歪まない！）
+                // 2. 補正した空間で回転
                 float s = sin(-_Rotation);
                 float c = cos(-_Rotation);
                 float2 rotatedUV;
@@ -55,6 +55,7 @@ Shader "Hidden/RectDrawer"
                 float2 halfSize = _Size * 0.5;
                 float2 targetSize = float2(halfSize.x * _Aspect, halfSize.y);
 
+                // 四角形の内側なら1、外側なら0
                 float isInside = step(abs(rotatedUV.x), targetSize.x) * step(abs(rotatedUV.y), targetSize.y);
 
                 return half4(isInside, 0, 0, 1);

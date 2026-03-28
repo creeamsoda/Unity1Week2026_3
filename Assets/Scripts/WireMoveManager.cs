@@ -29,6 +29,10 @@ public class WireMoveManager : MonoBehaviour
     [SerializeField] private CableObject leftCableObject;
     [SerializeField] private CableObject rightCableObject; 
     private Vector2 wireStayPosition = new Vector2(0f, 3f);
+    private Vector2 wireLeftHandStayPosition = new Vector2(0f, 3f);
+    private Vector2 wireRightHandStayPosition = new Vector2(0f, 3f);
+    private Vector2 wireLeftFootStayPosition = new Vector2(0f, 3f);
+    private Vector2 wireRightFootStayPosition = new Vector2(0f, 3f);
 
     // キーの入力を受ける
     [SerializeField] private InputAction leftAction;
@@ -50,6 +54,10 @@ public class WireMoveManager : MonoBehaviour
         moveAction.Enable();
         switchLeftAction.Enable();
         switchRightAction.Enable();
+        wireStayPosition = selectingWireRigidBody.position;
+        wireRightHandStayPosition = rightHandRigidBody.position;
+        wireLeftFootStayPosition = leftFootRigidBody.position;
+        wireRightFootStayPosition = rightFootRigidBody.position;
     }
 
     private void OnDestroy()
@@ -67,9 +75,9 @@ public class WireMoveManager : MonoBehaviour
         }
         else
         {
-            onWireAddForce.OnNext(Vector2.zero);
-            leftHandRigidBody.position = new Vector2(leftHandRigidBody.position.x, wireStayPosition.y);
-            leftHandRigidBody.linearVelocity = new Vector2(leftHandRigidBody.linearVelocity.x, 0f);
+            onWireAddForce.OnNext(Vector2.zero); 
+            selectingWireRigidBody.position = new Vector2(selectingWireRigidBody.position.x, wireStayPosition.y);
+            selectingWireRigidBody.linearVelocity = new Vector2(selectingWireRigidBody.linearVelocity.x, 0f);
         }
 
         if (Mathf.Abs(moveAction.ReadValue<Vector2>().x) > inputIgnoreBorderSqr)
@@ -79,8 +87,32 @@ public class WireMoveManager : MonoBehaviour
         else
         {
             onWireAddForce.OnNext(Vector2.zero);
-            leftHandRigidBody.position = new Vector2(wireStayPosition.x, leftHandRigidBody.position.y);
-            leftHandRigidBody.linearVelocity = new Vector2(0f, leftHandRigidBody.linearVelocity.y);
+            selectingWireRigidBody.position = new Vector2(wireStayPosition.x, selectingWireRigidBody.position.y);
+            selectingWireRigidBody.linearVelocity = new Vector2(0f, selectingWireRigidBody.linearVelocity.y);
+        }
+
+        if (selectingWireRigidBody != leftHandRigidBody)
+        {
+            leftHandRigidBody.position = wireLeftHandStayPosition;
+            leftHandRigidBody.linearVelocity = Vector2.zero;
+        }
+        
+        if (selectingWireRigidBody != rightHandRigidBody)
+        {
+            rightHandRigidBody.position = wireRightHandStayPosition;
+            rightHandRigidBody.linearVelocity = Vector2.zero;
+        }
+
+        if (selectingWireRigidBody != leftFootRigidBody)
+        {
+            leftFootRigidBody.position = wireLeftFootStayPosition;
+            leftFootRigidBody.linearVelocity = Vector2.zero;
+        }
+
+        if (selectingWireRigidBody != rightFootRigidBody)
+        {
+            rightFootRigidBody.position = wireRightFootStayPosition;
+            rightFootRigidBody.linearVelocity = Vector2.zero;
         }
     }
 
@@ -126,14 +158,79 @@ public class WireMoveManager : MonoBehaviour
         if (isLeft)
         {
             if (currentSelectedWireIndex == 0) return;
+            if (selectingWireRigidBody == leftHandRigidBody)
+            {
+                wireLeftHandStayPosition = selectingWireRigidBody.position;
+            }
+            else if (selectingWireRigidBody == rightHandRigidBody)
+            {
+                wireRightHandStayPosition = selectingWireRigidBody.position;
+            }
+            else if (selectingWireRigidBody == leftFootRigidBody)
+            {
+                wireLeftFootStayPosition = selectingWireRigidBody.position;
+            }
+            else if (selectingWireRigidBody == rightFootRigidBody)
+            {
+                wireRightFootStayPosition = selectingWireRigidBody.position;
+            }
 
             selectingWireRigidBody = sortedWires[currentSelectedWireIndex - 1];
+            switch (selectingWireRigidBody)
+            {
+                case var rb when rb == leftHandRigidBody:
+                    selectingCableObject = leftHandCableObject;
+                    break;
+                case var rb when rb == rightHandRigidBody:
+                    selectingCableObject = rightHandCableObject;
+                    break;
+                case var rb when rb == leftFootRigidBody:
+                    selectingCableObject = leftCableObject;
+                    break;
+                case var rb when rb == rightFootRigidBody:
+                    selectingCableObject = rightCableObject;
+                    break;
+            }
+            wireStayPosition = selectingWireRigidBody.position;
         }
         else
         {
             if (currentSelectedWireIndex == sortedWires.Count - 1) return;
             
+            if (selectingWireRigidBody == leftHandRigidBody)
+            {
+                wireLeftHandStayPosition = selectingWireRigidBody.position;
+            }
+            else if (selectingWireRigidBody == rightHandRigidBody)
+            {
+                wireRightHandStayPosition = selectingWireRigidBody.position;
+            }
+            else if (selectingWireRigidBody == leftFootRigidBody)
+            {
+                wireLeftFootStayPosition = selectingWireRigidBody.position;
+            }
+            else if (selectingWireRigidBody == rightFootRigidBody)
+            {
+                wireRightFootStayPosition = selectingWireRigidBody.position;
+            }
+            
             selectingWireRigidBody = sortedWires[currentSelectedWireIndex + 1];
+            switch (selectingWireRigidBody)
+            {
+                case var rb when rb == leftHandRigidBody:
+                    selectingCableObject = leftHandCableObject;
+                    break;
+                case var rb when rb == rightHandRigidBody:
+                    selectingCableObject = rightHandCableObject;
+                    break;
+                case var rb when rb == leftFootRigidBody:
+                    selectingCableObject = leftCableObject;
+                    break;
+                case var rb when rb == rightFootRigidBody:
+                    selectingCableObject = rightCableObject;
+                    break;
+            }
+            wireStayPosition = selectingWireRigidBody.position;
         }
     }
 }

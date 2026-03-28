@@ -72,7 +72,7 @@ Shader "Custom/DollBodyShader_Masked"
 
                 // 3. マスクのR（赤）チャンネルを「色替えの強さ」として利用
                 // mask.r が 0なら元の色、1ならOverlayColorになる
-                float blendFactor = mask.r * _OverlayIntensity;
+                float blendFactor =  mask.r * _OverlayIntensity;
 
                 // 4. lerp関数で色を混ぜる
                 half3 finalRGB = lerp(baseTexColor.rgb, _OverlayColor.rgb, blendFactor);

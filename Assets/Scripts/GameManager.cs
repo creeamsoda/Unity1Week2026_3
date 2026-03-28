@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour
     {
         Transform[] elementsTransform = task.GetComponentsInChildrenWithoutSelf<Transform>();
 
+        dollManager.bodyMaskController.BeginUpdate();
+        
         foreach (Transform element in elementsTransform)
         {
             AddSquare(element, dollManager.bodySpriteRenderer, dollManager.bodyMaskController);
@@ -37,6 +39,8 @@ public class GameManager : MonoBehaviour
             // AddSquare(element, dollManager.rightLeg.transform, dollManager.rightLegMaskController);
             Debug.LogError("手足の着色処理はまだコメントアウトしてる、各手足にMaskつけてからここのコメントアウト解除する");
         }
+        
+        dollManager.bodyMaskController.EndUpdate();
     }
 
     private void AddSquare(Transform taskElement, SpriteRenderer doll, MaskController maskController)
